@@ -17,7 +17,7 @@ function ContractsProvider({ children }) {
     });
     const publicClient = createPublicClient({
         chain: sepolia,
-        transport: http(),
+        transport: http(`https://eth-sepolia.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`),
     });
 
     const betContract = getContract({
@@ -25,7 +25,7 @@ function ContractsProvider({ children }) {
             public: publicClient,
             wallet: walletClient,
         },
-        address: process.env.VITE_BET_CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_BET_CONTRACT_ADDRESS,
         abi: betContractAbi,
     });
     const betTokenContract = getContract({
@@ -33,7 +33,7 @@ function ContractsProvider({ children }) {
             public: publicClient,
             wallet: walletClient,
         },
-        address: process.env.VITE_BET_TOKEN_CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_BET_TOKEN_CONTRACT_ADDRESS,
         abi: betTokenContractAbi,
     });
     const betCoinContract = getContract({
@@ -41,7 +41,7 @@ function ContractsProvider({ children }) {
             public: publicClient,
             wallet: walletClient,
         },
-        address: process.env.VITE_BET_COIN_CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_BET_COIN_CONTRACT_ADDRESS,
         abi: betCoinContractAbi,
     });
 
@@ -50,6 +50,7 @@ function ContractsProvider({ children }) {
             bet: betContract,
             betToken: betTokenContract,
             betCoin: betCoinContract,
+            publicClient,
         }}>
             {children}
         </ContractsContext.Provider>
