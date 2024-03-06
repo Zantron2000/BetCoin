@@ -1,156 +1,67 @@
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import Header from "../Header";
+import { getOwnersForContract } from "../../utils/Alchemy";
+import NftCard from "../NftCard";
 
 function ListingsPage() {
+    const [search, setSearch] = useState('');
+    const [nfts, setNfts] = useState([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            const nftData = await getOwnersForContract();
+            console.log(nftData, 'HERE')
+            setNfts(nftData ? nftData : []);
+        }
+
+        loadData();
+    }, []);
+
     return (
         <div className='flex flex-col justify-col items-center'>
             <div className='flex flex-col w-full max-w-[1750px] h-[100vh]'>
                 <Header />
                 <div className='w-full h-full'>
                     <div className="py-4 flex justify-center">
-                        <input type='text' placeholder='Search NFTs' className="w-[80%] p-2 rounded text-black outline-none" />
+                        <input
+                            type='text'
+                            placeholder='Search NFTs'
+                            className="w-[80%] p-2 rounded text-black outline-none"
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
                     <div className="w-full border border-red-600/0">
-                        <div className="w-full flex justify-between p-2">
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?text=A" alt="nft" className="w-[100%] rounded-t-lg" />
+                        {
+                            ...[
+                                ...nfts.reduce((acc, { tokenId, owner }) => {
+                                    const lastArray = acc[acc.length - 1];
+
+                                    if (tokenId.includes(search)) {
+                                        if (lastArray.length < 5) {
+                                            lastArray.push({ tokenId, owner });
+                                        } else {
+                                            acc.push([{ tokenId, owner }]);
+                                        }
+                                    }
+
+                                    return acc;
+                                }, [[]])
+                            ].map((nftRow) => {
+                                return <div className="w-full flex justify-between p-2">
+                                    {
+                                        nftRow.map(({ tokenId, owner }) => (
+                                            <NftCard
+                                                key={tokenId}
+                                                tokenId={tokenId}
+                                                owner={owner}
+                                            />
+                                        ))
+                                    }
                                 </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div className="w-full flex justify-between p-2">
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div className="w-full flex justify-between p-2">
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                            <a href="#" className="border-2 border-white hover:border-[#ffff00] w-1/6 h-96 rounded-lg block">
-                                <div className="w-full flex justify-center">
-                                    <img src="https://api.cloudnouns.com/v1/pfp?name=0" alt="nft" className="w-[100%] rounded-t-lg" />
-                                </div>
-                                <div className="p-2">
-                                    <h1 className="text-lg font-bold">NFT #0</h1>
-                                    <p>Owned by: 0x1234...5678</p>
-                                </div>
-                            </a>
-                        </div>
+                            })
+                        }
                     </div>
                 </div>
             </div>
