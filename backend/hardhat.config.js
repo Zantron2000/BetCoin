@@ -12,4 +12,7 @@ module.exports = {
       accounts: [BET_OWNER_PRIVATE_KEY]
     }
   },
+  etherscan: {
+    apiKey: vars.get("ETHERSCAN_API_KEY")
+  }
 };
