@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "verify:sepolia": "npx hardhat verify --network sepolia",
+    "deploy:sepolia": "npx hardhat run --network sepolia scripts/deploy.js"
   },
   "author": "Zantron.eth",
   "license": "ISC",
