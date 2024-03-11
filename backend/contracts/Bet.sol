@@ -9,11 +9,16 @@ import "./BetToken.sol";
 import "./BetCoin.sol";
 
 contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
+    event BetPlaced(address indexed better, uint256 indexed tokenId, uint256 indexed requestId);
+    event BetWon(address indexed better, uint256 indexed tokenId, uint256 indexed requestId);
+    event BetLost(address indexed better, uint256 indexed tokenId, uint256 indexed requestId);
+
     bytes32 private _keyHash = 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c;
     uint64 private _subId;
     uint16 private _minimumRequestConfirmations = 3;
     uint32 private _callbackGasLimit = 60000;
     uint32 private _numWords = 1;
+    uint16 private _betCost = 20;
 
     struct BetInfo {
         uint256 amount;
@@ -36,6 +41,10 @@ contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
         _subId = subId;
     }
 
+    function getBetCost(uint256 tokenId) public view returns (uint16) {
+        return _betCost;
+    }
+
     function getBetCoinAddress() public view returns (address) {
         return address(_betCoin);
     }
@@ -50,7 +59,7 @@ contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
             "You can't bet on a token you own"
         );
 
-        uint256 amount = 20;
+        uint256 amount = _betCost;
         _betCoin.lockAssets(msg.sender, amount);
         _betToken.lockAsset(tokenId);
 
@@ -64,6 +73,7 @@ contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
         );
 
         _bets[requestId] = betInfo;
+        emit BetPlaced(msg.sender, tokenId, requestId);
     }
 
     function fulfillRandomWords(
@@ -76,6 +86,8 @@ contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
         if (number == 0) {
             _betCoin.unlockAssets(betInfo.better, betInfo.amount);
             _betToken.stealAsset(betInfo.better, betInfo.tokenId);
+
+            emit BetWon(betInfo.better, betInfo.tokenId, _requestId);
         } else {
             _betCoin.payDebts(
                 betInfo.better,
@@ -83,6 +95,8 @@ contract Bet is VRFConsumerBaseV2, ConfirmedOwner {
                 betInfo.amount
             );
             _betToken.unlockAsset(betInfo.tokenId);
+
+            emit BetLost(betInfo.better, betInfo.tokenId, _requestId);
         }
 
         delete _bets[_requestId];
