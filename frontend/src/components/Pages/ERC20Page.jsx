@@ -14,6 +14,9 @@ function ERC20Page() {
     const [showTransaction, setShowTransaction] = useState(false);
     const [transaction, setTransaction] = useState({ hash: '', status: 'Pending' });
 
+    /**
+     * Loads the balance and unlock date for the user.
+     */
     const loadBalance = async () => {
         const data = await getAccountInfo(betCoin, ssx.address());
 
@@ -29,6 +32,11 @@ function ERC20Page() {
         }
     }
 
+    /**
+     * Watches a transaction to see if it succeeds or fails
+     * 
+     * @param {String} transactionHash The hash of the transaction to watch
+     */
     const watchTransaction = async (transactionHash) => {
         try {
             const receipt = await publicClient.waitForTransactionReceipt({
@@ -47,6 +55,9 @@ function ERC20Page() {
         }
     }
 
+    /**
+     * Attempts to mint BetCoin for the user
+     */
     const mintCoins = async () => {
         const transactionHash = await mint(betCoin);
 
