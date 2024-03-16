@@ -14,6 +14,11 @@ function ERC721Page() {
     const [showTransaction, setShowTransaction] = useState(false);
     const [transaction, setTransaction] = useState({ hash: '', status: 'Pending' });
 
+    /**
+     * Attempts to load user data from the BetToken contract
+     * 
+     * @returns {Promise<void>} A promise that resolves when the data is loaded
+     */
     const loadStatus = async () => {
         const data = await getAccountInfo(betToken, ssx.address());
 
@@ -30,6 +35,12 @@ function ERC721Page() {
         }
     }
 
+    /**
+     * Watches a transaction to see if it succeeds or fails
+     * 
+     * @param {String} transactionHash The hash of the transaction to watch
+     * @returns {Promise<void>} A promise that resolves when the transaction is complete
+     */
     const watchTransaction = async (transactionHash) => {
         try {
             const receipt = await publicClient.waitForTransactionReceipt({
@@ -48,6 +59,9 @@ function ERC721Page() {
         }
     }
 
+    /**
+     * Attempts to mint a BetToken NFT for the user
+     */
     const mintNFT = async () => {
         const transactionHash = await mint(betToken, ssx.address());
 
