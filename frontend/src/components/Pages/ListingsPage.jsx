@@ -10,9 +10,9 @@ function ListingsPage() {
     const [nfts, setNfts] = useState([]);
 
     useEffect(() => {
+        // Loads all minted NFTs and their owners
         const loadData = async () => {
             const nftData = await getOwnersForContract();
-            console.log(nftData, 'HERE')
             setNfts(nftData ? nftData : []);
         }
 

@@ -16,11 +16,10 @@ function ProfilePage() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
+        // Load the user's balance and NFTs
         const loadData = async () => {
             const coinData = await getAccountInfo(betCoin, ssx.address());
             const nftData = await getNFTsForOwner(ssx.address());
-
-            console.log(coinData.balance, 'HERE')
 
             setBalance(coinData ? Number(coinData.balance) : 'Error loading information');
             setOwnedNfts(nftData ? nftData.nfts : []);

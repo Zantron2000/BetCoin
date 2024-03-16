@@ -7,6 +7,7 @@ function Authenticated({ children }) {
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    // If the user is not authenticated, redirect them to the home page
     useEffect(() => {
         if (!ssx?.session()) {
             navigate('/')
